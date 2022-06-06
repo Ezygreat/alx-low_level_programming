@@ -12,43 +12,26 @@
  */
 int main(void)
 {
-	int digit1;
-	int digit2;
-	int digit3;
+	int nums;
+	int nums1;
+	int nums2;
 
-	digit1 = 48;
-	digit2 = 49;
-	digit3 = 50;
-	while ((digit1 < 56) && (digit2 < 57) && (digit3 < 58))
+	for (nums = '0'; nums <= '7'; nums++)
 	{
-		putchar(digit1);
-		putchar(digit2);
-		putchar(digit3);
-		if ((digit1 == 55) && (digit2 == 56) && (digit3 == 57))
+		for (nums1 = nums + 1; nums1 <= '9'; nums1++)
 		{
-			putchar('\n');
-			digit1++;
-			digit2++;
-			digit3++;
-		}
-		else
-		{
-			putchar(44);
-			putchar(32);
-			if (digit3 < 57)
+			for (nums2 = nums1 + 1; nums2 <= '9'; nums2++)
 			{
-				digit3++;
-			}
-			else if ((digit2 < 56) && (digit3 == 57))
-			{
-				digit3 = 1 + ++digit2;
-			}
-			else
-			{
-				digit2 = 1 + ++digit1;
-				digit3 = 1 + ++digit2;
+				putchar(nums);
+				putchar(nums1);
+				putchar(nums2);
+				if (nums == '7' && nums1 == '8' && nums2 == '9')
+				break;
+				putchar(',');
+				putchar(' ');
 			}
 		}
 	}
+	putchar('\n');
 	return (0);
 }
