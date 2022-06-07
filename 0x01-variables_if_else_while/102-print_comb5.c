@@ -10,22 +10,34 @@
  */
 int main(void)
 {
-	int num1, num2;
+	int a;
+	int b;
+	int c;
+	int d;
 
-	for (num1 = 0; num1 <= 98; num1++)
+	for (a = 48; a < 58; a++)
 	{
-		for (num2 = num1 + 1; num2 <= 99; num2++)
+		for (b = 48; b < 58; b++)
 		{
-			putchar((num1 / 10) + '0');
-			putchar((num1 % 10) + '0');
-			putchar(' ');
-			putchar((num2 / 10) + '0');
-			putchar((num2 % 10) + '0');
-
-			if (num1 == 98 && num2 == 99)
-				continue;
-			putchar(',');
-			putchar(',');
+			d = b + 1;
+			c = a;
+			for (; c < 58; c++)
+			{
+				for (; d < 58; d++)
+				{
+					putchar(a);
+					putchar(b);
+					putchar(' ');
+					putchar(c);
+					putchar(d);
+					if (a != 57 || c != 57 || b != 56 || d != 57)
+					{
+						putchar(',');
+						putchar(' ');
+					}
+				}
+				d = 48;
+			}
 		}
 	}
 	putchar('\n');
