@@ -10,7 +10,7 @@
 int main(void)
 {
 	int i;
-	unsigned long fib1 = 2, fib2 = 1, sum;
+	unsigned long fib1 = 0, fib2 = 1, sum;
 
 	for (i = 0; i < 50; i++)
 	{
