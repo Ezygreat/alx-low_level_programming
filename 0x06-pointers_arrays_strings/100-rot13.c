@@ -10,21 +10,21 @@
 
 char *rot13(char *str)
 {
-	int i = 0;
+	int a = 0, i;
+	char letters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	char rot13[] = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
 
-	while (str[i] != '\0')
+	while (*(str + a) != '\0')
 	{
-		while ((str[i] >= 'a' && str[i] <= 'z') ||
-				(str[i] >= 'A' && str[i] <= 'Z'))
+		for (i = 0; i < 52; i++)
 		{
-			if ((str[i] >= 'a' && str[i] <= 'm') ||
-					(str[i] >= 'A' && str[i] <= 'M'))
-				str[i] += 13;
-			else
-				str[i] -= 13;
-			i++;
+			if (*(str + a) == letters[i])
+			{
+				*(str + a) = rot13[i];
+				break;
+			}
 		}
-		i++;
+		a++;
 	}
 	return (str);
 }
