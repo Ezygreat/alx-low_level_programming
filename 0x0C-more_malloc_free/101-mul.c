@@ -152,7 +152,6 @@ char *strmul(char *a, char *b)
  *
  * Return: 0 if successful, 98 if failure
  */
-
 int main(int argc, char *argv[])
 {
 	char *result;
