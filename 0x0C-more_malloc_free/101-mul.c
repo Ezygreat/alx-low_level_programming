@@ -1,153 +1,180 @@
-#include "main.h"
 #include <stdlib.h>
+#include "main.h"
 
 /**
- * _print - moves a string one place to the left and prints the string
- * @str: string to move
- * @l: size of string
+ * _calloc - allocate (`size' * `nmemb') bytes and set to 0
+ * @nmemb: number of elements
+ * @size: number of bytes per element
  *
- * Return: void
+ * Return: pointer to memory, or NULL if `nmemb' or `size' is 0 or malloc fails
  */
 
-void _print(char *str, int l)
+void *_calloc(unsigned int nmemb, unsigned int size)
 {
-	int i, j;
+	unsigned int i;
+	char *p;
 
-	i = j = 0;
-	while (i < l)
-	{
-		if (str[i] != '0')
-			j = 1;
-		if (j || i == l - 1)
-			_putchar(str[i]);
-		i++;
-	}
-	_putchar('\n');
-	free(str);
-}
-
-/**
- * mul - multiplies a char with a string and places the answer into dest
- * @n: char to multiply
- * @num: string to multiply
- * @num_index: last non NULL index of num
- * @dest: destination of multiplication
- * @dest_index: highest index to start addition
- *
- * Return: pointer to dest, or NULL on failure
- */
-
-char *mul(char n, char *num, int num_index, char *dest, int dest_index)
-{
-	int j, k, mul, mulrem, add, addrem;
-
-	mulrem = addrem = 0;
-	for (j = num_index, k = dest_index; j >= 0; j--, k--)
-	{
-		mul = (n - '0') * (num[j] - '0') + mulrem;
-		mulrem = mul / 10;
-		add = (dest[k] - '0') + (mul % 10) + addrem;
-		addrem = add / 10;
-		dest[k] = add % 10 + '0';
-	}
-	for (addrem += mulrem; k >= 0 && addrem; k--)
-	{
-		add = (dest[k] - '0') + addrem;
-		addrem = add / 10;
-		dest[k] = add % 10 + '0';
-	}
-	if (addrem)
-	{
+	if (size == 0 || nmemb == 0)
 		return (NULL);
-	}
-	return (dest);
+	p = malloc(nmemb * size);
+	if (p == NULL)
+		return (NULL);
+	for (i = 0; i < nmemb * size; ++i)
+		p[i] = 0;
+	return (p);
 }
 
 /**
- * check_for_digits - checks the arguments to ensure they are digits
- * @av: pointer to arguments
+ * _strdigit - check if string `s' is composed only of digits
+ * @s: string to check
  *
- * Return: 0 if digits, 1 if not
+ * Return: 1 if true, 0 if false
  */
 
-int check_for_digits(char **av)
+int _strdigit(char *s)
+{
+	if (*s == '-' || *s == '+')
+		++s;
+	while (*s)
+	{
+		if (*s < '0' || *s > '9')
+		{
+			return (0);
+		}
+		++s;
+	}
+	return (1);
+}
+
+/**
+ * _puts - print string `s'
+ * @s: string to print
+ */
+void _puts(char *s)
+{
+	while (*s)
+		_putchar(*(s++));
+}
+
+/**
+ * rev_num_str - reverse a number string up to trailing zeros
+ * @start: beginning of number
+ * @end: end of number
+ * @ns: string containing number
+ */
+
+void rev_num_str(int start, int end, char *ns)
 {
 	int i, j;
+	char tmp;
 
-	for (i = 1; i < 3; i++)
+	while (ns[end] == 0 && end != start)
+		--end;
+	for (i = start, j = end; i <= j; ++i, --j)
 	{
-		for (j = 0; av[i][j]; j++)
-		{
-			if (av[i][j] < '0' || av[i][j] > '9')
-				return (1);
-		}
+	tmp = ns[i] + '0';
+	ns[i] = ns[j] + '0';
+	ns[j] = tmp;
 	}
-	return (0);
 }
 
 /**
- * init - initializes a string
- * @str: sting to initialize
- * @l: length of strinf
+ * _strlen - calculate length of string `s'
+ * @s: string to get length of
  *
- * Return: void
+ * Return: length of string
  */
 
-void init(char *str, int l)
+int _strlen(char *s)
 {
 	int i;
 
-	for (i = 0; i < l; i++)
-		str[i] = '0';
-	str[i] = '\0';
+	for (i = 0; s[i]; ++i)
+		;
+	return (i);
 }
 
 /**
- * main - multiply two numbers
- * @argc: number of arguments
- * @argv: argument vector
+ * strmul - multply two numbers as strings
+ * @a: first number
+ * @b: second number
  *
- * Return: zero, or exit status of 98 if failure
+ * Return: pointer to result on success, or NULL on failure
+ */
+
+char *strmul(char *a, char *b)
+{
+	int la, lb, i, j, k, l, neg = 0;
+	char *result;
+	char mul, mul_carry, sum, sum_carry;
+
+	if (*a == '-')
+	{
+		neg ^= 1;
+		++a;
+	}
+	if (*b == '-')
+	{
+		neg ^= 1;
+		++b;
+	}
+	la = _strlen(a);
+	lb = _strlen(b);
+	result = _calloc(la + lb + 1 + neg, sizeof(char));
+	if (result == NULL)
+		return (NULL);
+	if (neg)
+		result[0] = '-';
+	for (i = lb - 1, l = neg; i >= 0; --i, ++l)
+	{
+		mul_carry = 0;
+		sum_carry = 0;
+		for (j = la - 1, k = l; j >= 0; --j, ++k)
+		{
+			mul = (a[j] - '0') * (b[i] - '0') + mul_carry;
+			mul_carry = mul / 10;
+			mul %= 10;
+			sum = result[k] + mul + sum_carry;
+			sum_carry = sum / 10;
+			sum %= 10;
+			result[k] = sum;
+		}
+		result[k] = sum_carry + mul_carry;
+	}
+	rev_num_str(neg, k, result);
+	return (result);
+}
+
+/**
+ * main - multiply two numbers from the command line and print the result
+ * @argc: argument count
+ * @argv: argument list
+ *
+ * Return: 0 if successful, 98 if failure
  */
 
 int main(int argc, char *argv[])
 {
-	int l1, l2, ln, ti, i;
-	char *a;
-	char *t;
-	char e[] = "Error\n";
+	char *result;
 
-	if (argc != 3 || check_for_digits(argv))
+	if (argc != 3)
 	{
-		for (ti = 0; e[ti]; ti++)
-			_putchar(e[ti]);
+		_puts("Error\n");
 		exit(98);
 	}
-	for (l1 = 0; argv[1][l1]; l1++)
-		;
-	for (l2 = 0; argv[2][l2]; l2++)
-		;
-	ln = l1 + l2 + 1;
-	a = malloc(ln * sizeof(char));
-
-	if (a == NULL)
+	if (!_strdigit(argv[1]) || !_strdigit(argv[2]))
 	{
-		for (ti = 0; e[ti]; ti++)
-			_putchar(e[ti]);
+		_puts("Error\n");
 		exit(98);
 	}
-	init(a, ln - 1);
-	for (ti = l2 - 1, i = 0; ti >= 0; ti--, i++)
+	result = strmul(argv[1], argv[2]);
+	if (result == NULL)
 	{
-		t = mul(argv[2][ti], argv[1], l1 - 1, a, (ln - 2) - i);
-		if (t == NULL)
-		{
-			for (ti = 0; e[ti]; ti++)
-				_putchar(e[ti]);
-			free(a);
-			exit(98);
-		}
+		_puts("Error\n");
+		exit(98);
 	}
-	_print(a, ln - 1);
-	return (0);
+	_puts(result);
+	_putchar('\n');
+	free(result);
+	exit(EXIT_SUCCESS);
 }
